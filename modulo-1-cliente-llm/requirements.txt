@@ -1,0 +1,7 @@
+openai>=3.26,<4
+anthropic>=1.12,<2
+pydantic>=2.14,<3
+python-dotenv>=1.2,<2
+
+# tests
+pytest>=9.1

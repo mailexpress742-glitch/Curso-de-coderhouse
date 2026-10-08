@@ -1,0 +1,8 @@
+# Entornos y secretos
+.venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
