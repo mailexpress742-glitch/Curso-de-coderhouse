@@ -1,12 +1,6 @@
-"""Esquemas Pydantic compartidos por todos los proveedores.
-
-Todo lo que entra (mensajes, parámetros) y todo lo que sale (respuestas, chunks
-de streaming, errores) pasa por estos modelos. Así el resto del código nunca
-trabaja con diccionarios anidados ni con los tipos propios de cada SDK.
-"""
-
 from collections.abc import Sequence
 from enum import StrEnum
+from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -23,8 +17,6 @@ class Role(StrEnum):
 
 
 class ChatMessage(BaseModel):
-    """Un mensaje de la conversación, con el mismo formato para cualquier proveedor."""
-
     model_config = ConfigDict(frozen=True)
 
     role: Role
@@ -35,32 +27,25 @@ type Messages = Sequence[ChatMessage]
 
 
 class GenerationParams(BaseModel):
-    """Parámetros de una llamada al modelo, validados antes de tocar la red."""
-
     model_config = ConfigDict(extra="forbid")
 
-    # None = no se envía y el modelo usa su valor por defecto. Algunos modelos
-    # (los de razonamiento de OpenAI y los Claude actuales) rechazan valores
-    # distintos al default, por eso es opcional.
-    temperature: float | None = Field(default=None, ge=0.0, le=2.0)
+    # Es opcional porque varios modelos (los de razonamiento de OpenAI y los
+    # Claude actuales) rechazan cualquier valor distinto al default.
+    temperature: float | None = Field(default=None, ge=0, le=2)
     max_tokens: int = Field(default=16_000, gt=0, le=128_000)
-    timeout_s: float = Field(default=60.0, gt=0, le=600)
+    timeout_s: float = Field(default=60, gt=0, le=600)
     max_retries: int = Field(default=3, ge=0, le=10)
 
 
 class ChatRequest(BaseModel):
-    """Mensajes + parámetros. Valida la forma de la conversación."""
-
     messages: list[ChatMessage] = Field(min_length=1)
     params: GenerationParams = Field(default_factory=GenerationParams)
 
     @model_validator(mode="after")
-    def _check_conversation(self) -> "ChatRequest":
-        turns = [m for m in self.messages if m.role is not Role.SYSTEM]
-        if not turns:
-            raise ValueError("la conversación necesita al menos un mensaje de usuario")
-        if turns[-1].role is not Role.USER:
-            raise ValueError("el último mensaje debe ser del usuario")
+    def last_message_from_user(self) -> Self:
+        turns = [m for m in self.messages if m.role != Role.SYSTEM]
+        if not turns or turns[-1].role != Role.USER:
+            raise ValueError("la conversación tiene que terminar con un mensaje del usuario")
         return self
 
 
@@ -76,8 +61,6 @@ class ErrorKind(StrEnum):
 
 
 class LLMError(BaseModel):
-    """Error controlado: se devuelve en lugar de propagar la excepción del SDK."""
-
     kind: ErrorKind
     message: str
     retryable: bool = False
@@ -90,8 +73,6 @@ class Usage(BaseModel):
 
 
 class ModelResponse(BaseModel):
-    """Respuesta normalizada: mismo formato sin importar el proveedor."""
-
     provider: Provider
     model: str
     content: str = ""
@@ -107,11 +88,8 @@ class ModelResponse(BaseModel):
 
 
 class StreamChunk(BaseModel):
-    """Un fragmento del streaming.
-
-    Los chunks intermedios traen `delta` (el texto nuevo). El último trae
-    `done=True` y, según cómo terminó, `finish_reason`, `usage` o `error`.
-    """
+    """Fragmento de texto del stream. El último llega con done=True y trae
+    el motivo de fin, el uso de tokens o el error."""
 
     delta: str = ""
     done: bool = False

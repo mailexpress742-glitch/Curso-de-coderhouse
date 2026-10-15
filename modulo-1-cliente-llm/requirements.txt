@@ -3,5 +3,6 @@ anthropic>=1.12,<2
 pydantic>=2.14,<3
 python-dotenv>=1.2,<2
 
-# tests
+# desarrollo
 pytest>=9.1
+ruff>=0.17

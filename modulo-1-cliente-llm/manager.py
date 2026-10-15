@@ -1,10 +1,3 @@
-"""AsyncLLMManager: punto de entrada único para hablar con cualquier proveedor.
-
-El resto de la aplicación sólo conoce esta clase. Qué proveedor se usa se decide
-por configuración (LLM_PROVIDER), así que pasar de OpenAI a Anthropic no
-requiere cambiar ninguna línea de lógica de negocio.
-"""
-
 import asyncio
 from collections.abc import AsyncIterator
 from typing import Any, Self
@@ -22,7 +15,6 @@ from schemas import (
     StreamChunk,
 )
 
-# Factory: qué clase concreta corresponde a cada proveedor.
 CLIENTS: dict[Provider, type[BaseLLMClient]] = {
     Provider.OPENAI: OpenAIClient,
     Provider.ANTHROPIC: AnthropicClient,
@@ -30,18 +22,20 @@ CLIENTS: dict[Provider, type[BaseLLMClient]] = {
 
 
 def create_client(settings: Settings) -> BaseLLMClient:
-    client_cls = CLIENTS[settings.provider]
-    return client_cls(
-        model=settings.model_for(settings.provider),
-        api_key=settings.api_key_for(settings.provider),
-    )
+    client_class = CLIENTS[settings.provider]
+    return client_class(model=settings.model, api_key=settings.api_key.get_secret_value())
 
 
 class AsyncLLMManager:
+    """Punto de entrada para el resto de la aplicación.
+
+    El proveedor se elige por configuración (LLM_PROVIDER), así que cambiar de
+    OpenAI a Anthropic no requiere tocar el código que usa el manager.
+    """
+
     def __init__(self, client: BaseLLMClient, *, max_concurrency: int = 5) -> None:
         self.client = client
-        # Tope de llamadas simultáneas: protege la cuota (429) si muchas tareas
-        # usan el mismo manager a la vez.
+        # Limita las llamadas simultáneas para no gatillar errores 429.
         self._semaphore = asyncio.Semaphore(max_concurrency)
 
     @classmethod
@@ -49,8 +43,7 @@ class AsyncLLMManager:
         return cls(create_client(settings), max_concurrency=settings.max_concurrency)
 
     @classmethod
-    def from_env(cls, provider: Provider | str | None = None) -> Self:
-        """Lee la configuración del entorno. Lanza ValidationError si está incompleta."""
+    def from_env(cls, provider: str | None = None) -> Self:
         return cls.from_settings(Settings.from_env(provider))
 
     @property
@@ -67,12 +60,6 @@ class AsyncLLMManager:
         params: GenerationParams | None = None,
         **overrides: Any,
     ) -> ModelResponse:
-        """Respuesta completa.
-
-        Las entradas inválidas (p. ej. temperature=3) lanzan ValidationError antes
-        de llamar a la API: son errores del que llama. Los fallos de red, cuota o
-        autenticación no lanzan: vuelven en `ModelResponse.error`.
-        """
         request = _build_request(messages, params, overrides)
         async with self._semaphore:
             return await self.client.generate(request.messages, request.params)
@@ -83,7 +70,6 @@ class AsyncLLMManager:
         params: GenerationParams | None = None,
         **overrides: Any,
     ) -> AsyncIterator[StreamChunk]:
-        """Generador asíncrono de chunks de texto, a medida que llegan de la API."""
         request = _build_request(messages, params, overrides)
         async with self._semaphore:
             async for chunk in self.client.stream(request.messages, request.params):
@@ -100,8 +86,11 @@ class AsyncLLMManager:
 
 
 def _build_request(
-    messages: Messages | str, params: GenerationParams | None, overrides: dict[str, Any]
+    messages: Messages | str,
+    params: GenerationParams | None,
+    overrides: dict[str, Any],
 ) -> ChatRequest:
+    """Valida la entrada. Si algo está mal lanza ValidationError antes de llamar a la API."""
     if isinstance(messages, str):
         messages = [ChatMessage(role=Role.USER, content=messages)]
     base = params.model_dump(exclude_unset=True) if params else {}

@@ -1,8 +1,7 @@
-"""Script de validación: hace la misma pregunta en modo normal y en streaming.
+"""Hace la misma pregunta en modo normal y en streaming.
 
-Uso:
-    python main.py                       # usa LLM_PROVIDER del .env
-    python main.py --provider anthropic  # fuerza un proveedor
+python main.py                       # usa LLM_PROVIDER del .env
+python main.py --provider anthropic
 """
 
 import argparse
@@ -24,31 +23,32 @@ MESSAGES = [
 ]
 
 
-def print_metadata(response: ModelResponse) -> None:
+def format_metadata(response: ModelResponse) -> str:
     usage = response.usage
     tokens = f"{usage.input_tokens} in / {usage.output_tokens} out" if usage else "s/d"
-    print(
+    return (
         f"[modelo: {response.model} | fin: {response.finish_reason} | tokens: {tokens}"
         f" | latencia: {response.latency_ms:.0f} ms | intentos: {response.attempts}]"
     )
 
 
-async def demo_normal(llm: AsyncLLMManager) -> bool:
-    print("\n=== 1) Modo normal ===")
+async def ask(llm: AsyncLLMManager) -> bool:
+    print("\n--- Modo normal ---")
     response = await llm.generate(MESSAGES)
     if not response.ok:
-        print(f"Error controlado ({response.error.kind}): {response.error.message}")
+        print(f"Error ({response.error.kind}): {response.error.message}")
         return False
+
     print(response.content)
-    print_metadata(response)
+    print(format_metadata(response))
     return True
 
 
-async def demo_streaming(llm: AsyncLLMManager) -> bool:
-    print("\n=== 2) Modo streaming ===")
+async def ask_streaming(llm: AsyncLLMManager) -> bool:
+    print("\n--- Modo streaming ---")
     async for chunk in llm.stream(MESSAGES):
         if chunk.error:
-            print(f"\nError controlado ({chunk.error.kind}): {chunk.error.message}")
+            print(f"\nError ({chunk.error.kind}): {chunk.error.message}")
             return False
         if chunk.done:
             tokens = chunk.usage.output_tokens if chunk.usage else "s/d"
@@ -58,12 +58,12 @@ async def demo_streaming(llm: AsyncLLMManager) -> bool:
     return True
 
 
-def demo_validation() -> None:
-    print("\n=== 3) Validación con Pydantic ===")
+def show_validation() -> None:
+    print("\n--- Validación ---")
     try:
         GenerationParams(temperature=3.5)
     except ValidationError as exc:
-        print(f"temperature=3.5 rechazada antes de llamar a la API: {exc.errors()[0]['msg']}")
+        print(f"temperature=3.5 rechazada sin llamar a la API: {exc.errors()[0]['msg']}")
 
 
 async def run(provider: str | None) -> int:
@@ -71,25 +71,25 @@ async def run(provider: str | None) -> int:
         llm = AsyncLLMManager.from_env(provider)
     except ValidationError as exc:
         print(f"Configuración inválida: {exc.errors()[0]['msg']}")
-        print("Revisá tu archivo .env (ver .env.example).")
+        print("Revisá el archivo .env (hay un ejemplo en .env.example).")
         return 1
 
     async with llm:
         print(f"Proveedor: {llm.provider} | modelo: {llm.model}")
         print(f"Pregunta: {QUESTION}")
-        ok_normal = await demo_normal(llm)
-        ok_stream = await demo_streaming(llm)
-        demo_validation()
-    return 0 if ok_normal and ok_stream else 1
+        normal_ok = await ask(llm)
+        stream_ok = await ask_streaming(llm)
+        show_validation()
+
+    return 0 if normal_ok and stream_ok else 1
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Prueba del Unified Async LLM Client")
-    parser.add_argument("--provider", choices=[p.value for p in Provider], default=None)
+    parser = argparse.ArgumentParser(description="Prueba del cliente unificado de LLMs")
+    parser.add_argument("--provider", choices=list(Provider), default=None)
     args = parser.parse_args()
 
-    # La salida del modelo puede traer símbolos (Σ, ≈, ...) que la consola de
-    # Windows no codifica por defecto.
+    # Sin esto, la consola de Windows falla con símbolos como Σ o ≈.
     sys.stdout.reconfigure(encoding="utf-8")
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
     load_dotenv()
