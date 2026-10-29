@@ -80,4 +80,4 @@ tests/
 
 - OpenAI devuelve el texto en `choices[0].message.content`. Anthropic devuelve una lista de bloques, donde además puede haber bloques de razonamiento que no se muestran.
 - OpenAI recibe el prompt de sistema como un mensaje más. Anthropic lo recibe aparte, en el parámetro `system`.
-- Los modelos actuales de Claude no aceptan `temperature`, así que el cliente de Anthropic no la envía y deja un aviso en el log. En OpenAI solo se envía si se define.
+- Con este proveedor `temperature` no se envía, porque los modelos actuales no la aceptan, y queda un aviso en el log. En OpenAI solo se envía si se define.

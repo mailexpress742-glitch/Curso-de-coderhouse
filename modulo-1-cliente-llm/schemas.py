@@ -29,8 +29,8 @@ type Messages = Sequence[ChatMessage]
 class GenerationParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    # Es opcional porque varios modelos (los de razonamiento de OpenAI y los
-    # Claude actuales) rechazan cualquier valor distinto al default.
+    # Es opcional porque varios modelos (por ejemplo los de razonamiento)
+    # rechazan cualquier valor distinto al default.
     temperature: float | None = Field(default=None, ge=0, le=2)
     max_tokens: int = Field(default=16_000, gt=0, le=128_000)
     timeout_s: float = Field(default=60, gt=0, le=600)
