@@ -1,0 +1,15 @@
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "N", "RUF"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["config", "documents", "embeddings", "evaluate", "fakes", "hybrid", "ingest", "setup_index"]

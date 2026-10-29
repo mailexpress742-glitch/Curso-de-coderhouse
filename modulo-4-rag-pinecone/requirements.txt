@@ -1,0 +1,17 @@
+langchain>=1.0,<2
+langchain-classic>=1.0,<2
+langchain-community>=0.4,<1
+langchain-text-splitters>=1.0,<2
+langchain-pinecone>=0.2
+langchain-openai>=1.0,<2
+pinecone>=7
+rank-bm25>=0.2.2
+fastembed>=0.7
+tiktoken>=0.12
+pydantic>=2.14,<3
+python-dotenv>=1.2,<2
+
+# desarrollo
+pytest>=9.1
+pytest-asyncio>=1.0
+ruff>=0.17

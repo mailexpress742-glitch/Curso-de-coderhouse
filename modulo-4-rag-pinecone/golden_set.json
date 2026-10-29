@@ -1,0 +1,20 @@
+[
+  {"pregunta": "¿Qué herramienta reescribe automáticamente el código para migrar a Pydantic 2?", "documento_id_esperado": "05_migracion_v1_v2.md"},
+  {"pregunta": "¿Cómo evito que una clave de API aparezca en los logs?", "documento_id_esperado": "04_configuracion.md"},
+  {"pregunta": "¿Cómo valido una lista de enteros sin definir una clase BaseModel?", "documento_id_esperado": "03_serializacion.md"},
+  {"pregunta": "¿Qué pasa con los campos no declarados cuando extra vale forbid?", "documento_id_esperado": "01_modelos_basicos.md"},
+  {"pregunta": "¿Cómo valido que el mínimo no supere al máximo comparando dos campos?", "documento_id_esperado": "02_validadores.md"},
+  {"pregunta": "¿Qué prioridad tiene el archivo .env frente a las variables de entorno del sistema?", "documento_id_esperado": "04_configuracion.md"},
+  {"pregunta": "¿Qué decorador reemplaza a validator de la versión 1?", "documento_id_esperado": "05_migracion_v1_v2.md"},
+  {"pregunta": "¿Para qué sirve el parámetro discriminator en una unión de modelos?", "documento_id_esperado": "03_serializacion.md"},
+  {"pregunta": "¿Cómo restrinjo un código al patrón de tres letras mayúsculas, un guion y cuatro dígitos?", "documento_id_esperado": "02_validadores.md"},
+  {"pregunta": "¿Con qué parámetro omito los campos que no se asignaron para una actualización parcial?", "documento_id_esperado": "03_serializacion.md"},
+  {"pregunta": "¿Qué paquete extra necesito instalar para validar direcciones de correo?", "documento_id_esperado": "06_tipos_especiales.md"},
+  {"pregunta": "¿Cómo declaro una clase genérica que envuelva cualquier tipo de dato en una respuesta de API?", "documento_id_esperado": "07_genericos_y_herencia.md"},
+  {"pregunta": "¿Por qué FastAPI devuelve un error 422 cuando el cuerpo de la petición es inválido?", "documento_id_esperado": "08_integracion_fastapi.md"},
+  {"pregunta": "¿Cómo valido los argumentos de una función sin crear un modelo?", "documento_id_esperado": "09_validar_funciones.md"},
+  {"pregunta": "¿Qué claves tiene cada elemento de la lista que devuelve errors() de una ValidationError?", "documento_id_esperado": "10_manejo_de_errores.md"},
+  {"pregunta": "¿Cómo creo una instancia sin ejecutar ninguna validación?", "documento_id_esperado": "12_buenas_practicas.md"},
+  {"pregunta": "¿Qué ocurre si asigno un valor inválido a un campo después de crear el modelo?", "documento_id_esperado": "12_buenas_practicas.md"},
+  {"pregunta": "¿Cómo genero el esquema JSON de lo que el modelo devuelve al serializar?", "documento_id_esperado": "11_json_y_esquemas.md"}
+]
