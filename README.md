@@ -6,3 +6,4 @@ Trabajos del curso de AI Engineering de Coderhouse.
 - [Módulo 2: pipeline de extracción técnica con LangChain y Pydantic](modulo-2-pipeline-validado/)
 - [Módulo 3: sistema RAG local con ChromaDB](modulo-3-rag-local/)
 - [Módulo 4: RAG escalable con Pinecone y recuperación híbrida](modulo-4-rag-pinecone/)
+- [Módulo 5: agente ReAct con LangGraph y memoria persistente](modulo-5-agente-react/)

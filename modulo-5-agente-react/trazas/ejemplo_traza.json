@@ -1,0 +1,235 @@
+{
+  "modelo": "anthropic:claude-opus-5-5",
+  "recursion_limit": 12,
+  "turnos": [
+    {
+      "thread_id": "demo-102",
+      "pregunta": "¿Cuántos pedidos tuvo el cliente 102 y cuál fue el total?",
+      "respuesta": "El cliente 102 hizo **3 pedidos** y gastó en total **$14.500**:\n\n- P-2001 (03/08/2026): $3.200\n- P-2002 (14/09/2026): $5.800\n- P-2003 (27/10/2026): $5.500",
+      "pasos": [
+        {
+          "paso": 1,
+          "nodo": "agent",
+          "tipo": "accion",
+          "razonamiento": null,
+          "herramientas": [
+            {
+              "nombre": "buscar_pedidos",
+              "argumentos": {
+                "cliente_id": 102
+              }
+            }
+          ]
+        },
+        {
+          "paso": 2,
+          "nodo": "tools",
+          "tipo": "observacion",
+          "herramienta": "buscar_pedidos",
+          "resultado": {
+            "cliente_id": 102,
+            "cantidad_pedidos": 3,
+            "total": 14500,
+            "pedidos": [
+              {
+                "pedido_id": "P-2001",
+                "fecha": "2026-08-03",
+                "total": 3200
+              },
+              {
+                "pedido_id": "P-2002",
+                "fecha": "2026-09-14",
+                "total": 5800
+              },
+              {
+                "pedido_id": "P-2003",
+                "fecha": "2026-10-27",
+                "total": 5500
+              }
+            ]
+          }
+        },
+        {
+          "paso": 3,
+          "nodo": "agent",
+          "tipo": "respuesta",
+          "contenido": "El cliente 102 hizo **3 pedidos** y gastó en total **$14.500**:\n\n- P-2001 (03/08/2026): $3.200\n- P-2002 (14/09/2026): $5.800\n- P-2003 (27/10/2026): $5.500"
+        }
+      ],
+      "llamadas_a_herramientas": 1,
+      "error": null
+    },
+    {
+      "thread_id": "demo-102",
+      "pregunta": "¿Y el último? ¿Qué productos incluía y en qué estado está?",
+      "respuesta": "El último pedido del cliente 102 es el **P-2003** (27/10/2026). Está **en camino**.\n\nIncluye:\n- 1 auricular inalámbrico: $3.500\n- 1 mouse ergonómico: $2.000\n\n**Total: $5.500**",
+      "pasos": [
+        {
+          "paso": 1,
+          "nodo": "agent",
+          "tipo": "accion",
+          "razonamiento": null,
+          "herramientas": [
+            {
+              "nombre": "detalle_pedido",
+              "argumentos": {
+                "pedido_id": "P-2003"
+              }
+            }
+          ]
+        },
+        {
+          "paso": 2,
+          "nodo": "tools",
+          "tipo": "observacion",
+          "herramienta": "detalle_pedido",
+          "resultado": {
+            "pedido_id": "P-2003",
+            "cliente_id": 102,
+            "fecha": "2026-10-27",
+            "estado": "en camino",
+            "items": [
+              {
+                "producto": "Auriculares inalámbricos",
+                "cantidad": 1,
+                "precio_unitario": 3500
+              },
+              {
+                "producto": "Mouse ergonómico",
+                "cantidad": 1,
+                "precio_unitario": 2000
+              }
+            ],
+            "total": 5500
+          }
+        },
+        {
+          "paso": 3,
+          "nodo": "agent",
+          "tipo": "respuesta",
+          "contenido": "El último pedido del cliente 102 es el **P-2003** (27/10/2026). Está **en camino**.\n\nIncluye:\n- 1 auricular inalámbrico: $3.500\n- 1 mouse ergonómico: $2.000\n\n**Total: $5.500**"
+        }
+      ],
+      "llamadas_a_herramientas": 1,
+      "error": null
+    },
+    {
+      "thread_id": "demo-nombre",
+      "pregunta": "¿Cuánto gastó en total Ana Pérez?",
+      "respuesta": "Ana Pérez gastó **$11.600** en total, sumando 2 pedidos:\n\n- P-4001 (11/07/2026): $6.100\n- P-4002 (05/10/2026): $5.500",
+      "pasos": [
+        {
+          "paso": 1,
+          "nodo": "agent",
+          "tipo": "accion",
+          "razonamiento": null,
+          "herramientas": [
+            {
+              "nombre": "buscar_cliente",
+              "argumentos": {
+                "nombre": "Ana Pérez"
+              }
+            }
+          ]
+        },
+        {
+          "paso": 2,
+          "nodo": "tools",
+          "tipo": "observacion",
+          "herramienta": "buscar_cliente",
+          "resultado": {
+            "clientes": [
+              {
+                "cliente_id": 104,
+                "nombre": "Ana Pérez"
+              }
+            ]
+          }
+        },
+        {
+          "paso": 3,
+          "nodo": "agent",
+          "tipo": "accion",
+          "razonamiento": null,
+          "herramientas": [
+            {
+              "nombre": "buscar_pedidos",
+              "argumentos": {
+                "cliente_id": 104
+              }
+            }
+          ]
+        },
+        {
+          "paso": 4,
+          "nodo": "tools",
+          "tipo": "observacion",
+          "herramienta": "buscar_pedidos",
+          "resultado": {
+            "cliente_id": 104,
+            "cantidad_pedidos": 2,
+            "total": 11600,
+            "pedidos": [
+              {
+                "pedido_id": "P-4001",
+                "fecha": "2026-07-11",
+                "total": 6100
+              },
+              {
+                "pedido_id": "P-4002",
+                "fecha": "2026-10-05",
+                "total": 5500
+              }
+            ]
+          }
+        },
+        {
+          "paso": 5,
+          "nodo": "agent",
+          "tipo": "respuesta",
+          "contenido": "Ana Pérez gastó **$11.600** en total, sumando 2 pedidos:\n\n- P-4001 (11/07/2026): $6.100\n- P-4002 (05/10/2026): $5.500"
+        }
+      ],
+      "llamadas_a_herramientas": 2,
+      "error": null
+    },
+    {
+      "thread_id": "demo-error",
+      "pregunta": "¿Cuántos pedidos tuvo el cliente 999?",
+      "respuesta": "No encontré ningún cliente con el ID 999 en la base de datos, así que no puedo decirte cuántos pedidos tiene.\n\n¿Puede ser que el número esté mal? Si me pasás el nombre del cliente, lo busco por nombre y averiguo sus pedidos.",
+      "pasos": [
+        {
+          "paso": 1,
+          "nodo": "agent",
+          "tipo": "accion",
+          "razonamiento": null,
+          "herramientas": [
+            {
+              "nombre": "buscar_pedidos",
+              "argumentos": {
+                "cliente_id": 999
+              }
+            }
+          ]
+        },
+        {
+          "paso": 2,
+          "nodo": "tools",
+          "tipo": "observacion",
+          "herramienta": "buscar_pedidos",
+          "resultado": {
+            "error": "no existe el cliente 999"
+          }
+        },
+        {
+          "paso": 3,
+          "nodo": "agent",
+          "tipo": "respuesta",
+          "contenido": "No encontré ningún cliente con el ID 999 en la base de datos, así que no puedo decirte cuántos pedidos tiene.\n\n¿Puede ser que el número esté mal? Si me pasás el nombre del cliente, lo busco por nombre y averiguo sus pedidos."
+        }
+      ],
+      "llamadas_a_herramientas": 1,
+      "error": null
+    }
+  ]
+}
