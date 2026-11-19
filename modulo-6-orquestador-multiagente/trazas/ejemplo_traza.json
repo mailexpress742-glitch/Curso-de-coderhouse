@@ -1,0 +1,437 @@
+{
+  "modelo": "anthropic:claude-opus-5-5",
+  "limites": {
+    "max_steps": 8,
+    "max_attempts": 2
+  },
+  "pregunta": "Quiero comprar auriculares o un parlante. Investigá las reseñas de los Auriculares Aurora X y del Parlante Brisa Mini, analizá el sentimiento y el puntaje promedio de cada uno y recomendame cuál conviene.",
+  "flujo": [
+    {
+      "nodo": "supervisor",
+      "paso": 1,
+      "destino": "investigador",
+      "instruccion": "Buscá en la base de productos las reseñas de los Auriculares Aurora X y del Parlante Brisa Mini. Para cada producto traé: la ficha básica (nombre exacto, precio), la lista completa de reseñas con su texto y su puntaje individual, y la cantidad total de reseñas encontradas. Todos los datos tienen que salir de la herramienta de búsqueda, no de tu memoria. No analices ni calcules promedios ni sentimiento: solo reuní y presentá los datos de forma ordenada, separados por producto. Si alguno de los dos productos no aparece o no tiene reseñas, indicalo explícitamente.",
+      "razon": "No hay aportes todavía. Según el flujo esperado, el primer paso es que el investigador reúna las reseñas y los puntajes de ambos productos (Aurora X y Brisa Mini), que son la base para que el analista calcule el sentimiento y el promedio (rúbrica: completitud y evidencia).",
+      "ajuste": null
+    },
+    {
+      "nodo": "investigador",
+      "intento": 1,
+      "instruccion": "Buscá en la base de productos las reseñas de los Auriculares Aurora X y del Parlante Brisa Mini. Para cada producto traé: la ficha básica (nombre exacto, precio), la lista completa de reseñas con su texto y su puntaje individual, y la cantidad total de reseñas encontradas. Todos los datos tienen que salir de la herramienta de búsqueda, no de tu memoria. No analices ni calcules promedios ni sentimiento: solo reuní y presentá los datos de forma ordenada, separados por producto. Si alguno de los dos productos no aparece o no tiene reseñas, indicalo explícitamente.",
+      "herramientas": [
+        "buscar_ficha_producto",
+        "buscar_ficha_producto",
+        "buscar_resenas",
+        "buscar_resenas"
+      ],
+      "resultado": "Encontré los dos productos en la base y los dos tienen reseñas.\n\n**1. Auriculares Aurora X**\n- **Nombre exacto:** Auriculares Aurora X (categoría audio)\n- **Precio:** $48.500\n- **Ficha:** inalámbricos con cancelación de ruido, batería de 30 h, Bluetooth 5.3, 250 g\n- **Reseñas:** 6 en total (AUR-1 a AUR-6)\n- **Puntaje de cada reseña:** AUR-1: 5 · AUR-2: 4 · AUR-3: 5 · AUR-4: 2 · AUR-5: 4 · AUR-6: 3\n\n**2. Parlante Brisa Mini**\n- **Nombre exacto:** Parlante Brisa Mini (categoría audio)\n- **Precio:** $22.900\n- **Ficha:** parlante portátil resistente al agua, batería de 12 h, Bluetooth 5.0, 480 g\n- **Reseñas:** 6 en total (BRI-1 a BRI-6)\n- **Puntaje de cada reseña:** BRI-1: 5 · BRI-2: 4 · BRI-3: 2 · BRI-4: 3 · BRI-5: 1 · BRI-6: 4\n\nTodos los datos salen de buscar_ficha_producto y buscar_resenas. No copié el texto de las reseñas porque al analista le llega aparte la respuesta completa de las herramientas. Tampoco calculé promedios ni analicé el sentimiento, porque eso lo hace el analista."
+    },
+    {
+      "nodo": "supervisor",
+      "paso": 2,
+      "destino": "analista",
+      "instruccion": "Usá los datos crudos de las herramientas del investigador (el JSON de buscar_resenas, que trae id, puntaje y texto de cada reseña) para analizar los dos productos: Auriculares Aurora X (6 reseñas, AUR-1 a AUR-6) y Parlante Brisa Mini (6 reseñas, BRI-1 a BRI-6). Para cada producto: 1) Calculá con tu herramienta de estadísticas el puntaje promedio y, si podés, la mediana, el mínimo, el máximo y la distribución de puntajes. 2) Corré tu herramienta de sentimiento sobre el texto de cada reseña y reportá el resultado por reseña (positivo/neutro/negativo con su score) y un resumen agregado por producto. 3) Identificá los temas positivos y negativos recurrentes que surjan de los textos (por ejemplo batería, conectividad, calidad de sonido, durabilidad, atención al cliente). 4) Verificá que los puntajes y la cantidad de reseñas coincidan con los datos del investigador y señalá cualquier discrepancia, incluida cualquier reseña cuyo sentimiento contradiga su puntaje. Incluí también los precios ($48.500 Aurora X y $22.900 Brisa Mini) para que se pueda considerar la relación precio-calidad. Todas las cifras tienen que salir de tus herramientas, no de cálculo mental. No busques información nueva ni redactes la recomendación final.",
+      "razon": "El aporte del investigador cumple la rúbrica: cubre los dos productos con ficha, precio y las 6 reseñas de cada uno. Los puntajes informados coinciden con el JSON crudo de las herramientas, y los textos de las reseñas, aunque no se copiaron en el resumen, están disponibles en los datos crudos. Corresponde avanzar al analista para calcular promedios y sentimiento.",
+      "ajuste": null
+    },
+    {
+      "nodo": "analista",
+      "intento": 1,
+      "instruccion": "Usá los datos crudos de las herramientas del investigador (el JSON de buscar_resenas, que trae id, puntaje y texto de cada reseña) para analizar los dos productos: Auriculares Aurora X (6 reseñas, AUR-1 a AUR-6) y Parlante Brisa Mini (6 reseñas, BRI-1 a BRI-6). Para cada producto: 1) Calculá con tu herramienta de estadísticas el puntaje promedio y, si podés, la mediana, el mínimo, el máximo y la distribución de puntajes. 2) Corré tu herramienta de sentimiento sobre el texto de cada reseña y reportá el resultado por reseña (positivo/neutro/negativo con su score) y un resumen agregado por producto. 3) Identificá los temas positivos y negativos recurrentes que surjan de los textos (por ejemplo batería, conectividad, calidad de sonido, durabilidad, atención al cliente). 4) Verificá que los puntajes y la cantidad de reseñas coincidan con los datos del investigador y señalá cualquier discrepancia, incluida cualquier reseña cuyo sentimiento contradiga su puntaje. Incluí también los precios ($48.500 Aurora X y $22.900 Brisa Mini) para que se pueda considerar la relación precio-calidad. Todas las cifras tienen que salir de tus herramientas, no de cálculo mental. No busques información nueva ni redactes la recomendación final.",
+      "herramientas": [
+        "validar_resenas",
+        "validar_resenas",
+        "calcular_estadisticas",
+        "calcular_estadisticas",
+        "analizar_sentimiento",
+        "analizar_sentimiento"
+      ],
+      "resultado": "## Análisis de reseñas: Auriculares Aurora X vs. Parlante Brisa Mini\n\nLas 12 reseñas (6 por producto) pasaron la validación sin errores, así que los datos son confiables. Las cifras salen de las herramientas, tomando como entrada el JSON del investigador.\n\n### 1. Auriculares Aurora X ($48.500)\n\n**Puntajes:** promedio **3,83**, mediana 4,0, mínimo 2, máximo 5, desvío 1,07.\nDistribución según los datos: dos de 5 (AUR-1, AUR-3), dos de 4 (AUR-2, AUR-5), uno de 3 (AUR-6) y uno de 2 (AUR-4).\n\n**Sentimiento:** promedio **0,36**. 67% positivas, 33% negativas, 0% neutras.\n\n| Reseña | Puntaje | Sentimiento | Score |\n|---|---|---|---|\n| AUR-1 | 5 | positivo | 1,0 |\n| AUR-2 | 4 | positivo | 0,5 |\n| AUR-3 | 5 | positivo | 1,0 |\n| AUR-4 | 2 | negativo | -1,0 |\n| AUR-5 | 4 | positivo | 1,0 |\n| AUR-6 | 3 | negativo | -0,33 |\n\n**Temas que se repiten:**\n- **A favor:** la batería (AUR-1, AUR-5), la calidad de sonido y los graves (AUR-1, AUR-6), la comodidad y el diseño (AUR-2), la buena relación precio-calidad (AUR-5) y la calidad de llamada (AUR-3).\n- **En contra:** la **conectividad** genera opiniones contrarias. AUR-3 dice que la conexión es estable y AUR-4 dice que se desconecta seguido. También aparecen el micrófono malo (AUR-4), un estuche frágil que se raya (AUR-6) y una cancelación de ruido que no es perfecta (AUR-2).\n\n### 2. Parlante Brisa Mini ($22.900)\n\n**Puntajes:** promedio **3,17**, mediana 3,5, mínimo 1, máximo 5, desvío 1,34.\nDistribución según los datos: uno de 5 (BRI-1), dos de 4 (BRI-2, BRI-6), uno de 3 (BRI-4), uno de 2 (BRI-3) y uno de 1 (BRI-5).\n\n**Sentimiento:** promedio **0,17**. 50% positivas, 33% negativas, 17% neutras.\n\n| Reseña | Puntaje | Sentimiento | Score |\n|---|---|---|---|\n| BRI-1 | 5 | positivo | 1,0 |\n| BRI-2 | 4 | positivo | 1,0 |\n| BRI-3 | 2 | negativo | -1,0 |\n| BRI-4 | 3 | neutro | 0,0 |\n| BRI-5 | 1 | negativo | -1,0 |\n| BRI-6 | 4 | positivo | 1,0 |\n\n**Temas que se repiten:**\n- **A favor:** buen sonido para su tamaño (BRI-1, BRI-2, BRI-6), la batería (BRI-2), resiste el agua y se lleva fácil (BRI-1), y el diseño y la facilidad de uso (BRI-6).\n- **En contra:** distorsiona a volumen alto (BRI-3), la app se traba (BRI-3), el Bluetooth tarda en conectar (BRI-4), un equipo llegó defectuoso (BRI-5) y la **atención al cliente** tardó semanas (BRI-5).\n\n### 3. Verificación de los datos\n- **Cantidad y puntajes:** coinciden con lo que informó el investigador (6 + 6 reseñas, mismos IDs y mismos puntajes individuales). No hay discrepancias.\n- **Sentimiento vs. puntaje:** no hay contradicciones fuertes. La única diferencia es **AUR-6**: tiene 3 estrellas (neutral) y el texto da sentimiento negativo (-0,33), por la crítica al estuche. El resto de las reseñas coincide con su puntaje, y BRI-4 (3 estrellas) da neutro.\n\n### 4. Comparación según los números\n\n| Métrica | Aurora X | Brisa Mini |\n|---|---|---|\n| Precio | $48.500 | $22.900 |\n| Puntaje promedio | **3,83** | 3,17 |\n| Mediana | **4,0** | 3,5 |\n| Puntaje mínimo | **2** | 1 |\n| Desvío | **1,07** | 1,34 |\n| Sentimiento promedio | **0,36** | 0,17 |\n| % positivas | **67%** | 50% |\n| % negativas | 33% | 33% |\n\n- El **Aurora X** sale mejor en todas las métricas de satisfacción, y sus opiniones son más parejas (desvío menor y peor puntaje de 2).\n- El **Brisa Mini** cuesta menos de la mitad, pero tiene opiniones más variadas y la única reseña de 1 estrella, por un equipo defectuoso y mala atención al cliente.\n- Ambos tienen la misma proporción de reseñas negativas (33%). Con solo 6 reseñas por producto, la muestra es chica y las diferencias hay que tomarlas con cautela.\n- No tengo una herramienta para calcular precio por punto de puntaje, así que no hice ese cálculo.\n- Además, son productos de tipo distinto (auriculares contra parlante portátil), así que la elección también depende de para qué los vas a usar."
+    },
+    {
+      "nodo": "supervisor",
+      "paso": 3,
+      "destino": "sintetizador",
+      "instruccion": "Redactá la respuesta final para el usuario, que quiere comprar auriculares o un parlante y pidió reseñas, sentimiento, puntaje promedio de cada producto y una recomendación. Usá solo las cifras de los aportes del investigador y del analista, sin inventar ni recalcular nada. 1) Presentá cada producto con su precio y una ficha breve. Auriculares Aurora X: $48.500, inalámbricos con cancelación de ruido, batería de 30 h, Bluetooth 5.3, 250 g. Parlante Brisa Mini: $22.900, portátil resistente al agua, batería de 12 h, Bluetooth 5.0, 480 g. 2) Indicá la cantidad de reseñas (6 cada uno) y el puntaje promedio: Aurora X 3,83 (mediana 4,0, mínimo 2, máximo 5, desvío 1,07) y Brisa Mini 3,17 (mediana 3,5, mínimo 1, máximo 5, desvío 1,34). 3) Resumí el sentimiento. Aurora X: promedio 0,36, 67% positivas, 33% negativas, 0% neutras. Brisa Mini: promedio 0,17, 50% positivas, 33% negativas, 17% neutras. 4) Mencioná los temas a favor y en contra que identificó el analista. Aurora X: a favor, batería, sonido, comodidad, calidad de llamada y relación precio-calidad; en contra, opiniones divididas sobre la conectividad, micrófono, estuche frágil y cancelación de ruido no perfecta. Brisa Mini: a favor, sonido para su tamaño, batería, resistencia al agua, diseño y facilidad de uso; en contra, distorsión a volumen alto, app que se traba, Bluetooth lento, una unidad defectuosa y mala atención al cliente. 5) Dá una recomendación clara y justificada con esos datos. El Aurora X tiene mejor satisfacción en todas las métricas. El Brisa Mini cuesta menos de la mitad, pero sus opiniones son más dispersas. Aclará que la elección también depende del uso, porque uno es para escucha personal y el otro un parlante portátil, por ejemplo para exteriores o agua. 6) Agregá la advertencia de que la muestra es chica (6 reseñas por producto). No calcules precio por punto ni agregues cifras que no estén en los aportes.",
+      "razon": "El analista cumple la rúbrica. Sus estadísticas coinciden con los puntajes del investigador (23/6=3,83 y 19/6=3,17) y con las salidas de las herramientas. Cubre los dos productos, el sentimiento, el promedio y los temas, y verificó la consistencia. Toca avanzar al sintetizador para redactar el informe final con la recomendación.",
+      "ajuste": null
+    },
+    {
+      "nodo": "sintetizador",
+      "intento": 1,
+      "instruccion": "Redactá la respuesta final para el usuario, que quiere comprar auriculares o un parlante y pidió reseñas, sentimiento, puntaje promedio de cada producto y una recomendación. Usá solo las cifras de los aportes del investigador y del analista, sin inventar ni recalcular nada. 1) Presentá cada producto con su precio y una ficha breve. Auriculares Aurora X: $48.500, inalámbricos con cancelación de ruido, batería de 30 h, Bluetooth 5.3, 250 g. Parlante Brisa Mini: $22.900, portátil resistente al agua, batería de 12 h, Bluetooth 5.0, 480 g. 2) Indicá la cantidad de reseñas (6 cada uno) y el puntaje promedio: Aurora X 3,83 (mediana 4,0, mínimo 2, máximo 5, desvío 1,07) y Brisa Mini 3,17 (mediana 3,5, mínimo 1, máximo 5, desvío 1,34). 3) Resumí el sentimiento. Aurora X: promedio 0,36, 67% positivas, 33% negativas, 0% neutras. Brisa Mini: promedio 0,17, 50% positivas, 33% negativas, 17% neutras. 4) Mencioná los temas a favor y en contra que identificó el analista. Aurora X: a favor, batería, sonido, comodidad, calidad de llamada y relación precio-calidad; en contra, opiniones divididas sobre la conectividad, micrófono, estuche frágil y cancelación de ruido no perfecta. Brisa Mini: a favor, sonido para su tamaño, batería, resistencia al agua, diseño y facilidad de uso; en contra, distorsión a volumen alto, app que se traba, Bluetooth lento, una unidad defectuosa y mala atención al cliente. 5) Dá una recomendación clara y justificada con esos datos. El Aurora X tiene mejor satisfacción en todas las métricas. El Brisa Mini cuesta menos de la mitad, pero sus opiniones son más dispersas. Aclará que la elección también depende del uso, porque uno es para escucha personal y el otro un parlante portátil, por ejemplo para exteriores o agua. 6) Agregá la advertencia de que la muestra es chica (6 reseñas por producto). No calcules precio por punto ni agregues cifras que no estén en los aportes.",
+      "herramientas": [],
+      "resultado": "# Auriculares Aurora X vs. Parlante Brisa Mini: cuál conviene\n\n**Los Aurora X tienen mejores reseñas, pero cuestan más del doble. El Brisa Mini solo conviene si lo que buscás es un parlante para compartir o usar cerca del agua.** Abajo está el detalle.\n\n## 1. Los productos\n\n| | Auriculares Aurora X | Parlante Brisa Mini |\n|---|---|---|\n| Precio | $48.500 | $22.900 |\n| Tipo | Inalámbricos con cancelación de ruido | Portátil, resistente al agua |\n| Batería | 30 h | 12 h |\n| Bluetooth | 5.3 | 5.0 |\n| Peso | 250 g | 480 g |\n\n*(investigador)*\n\n## 2. Puntajes de las reseñas\n\nCada producto tiene **6 reseñas** *(investigador)*. El analista confirmó que la cantidad y los puntajes coinciden con lo que trajo el investigador.\n\n| Métrica | Aurora X | Brisa Mini |\n|---|---|---|\n| Puntaje promedio | **3,83** | 3,17 |\n| Mediana | **4,0** | 3,5 |\n| Mínimo / Máximo | 2 / 5 | 1 / 5 |\n| Desvío | **1,07** | 1,34 |\n\n*(analista)*\n\n## 3. Sentimiento de los textos\n\n| Métrica | Aurora X | Brisa Mini |\n|---|---|---|\n| Sentimiento promedio | **0,36** | 0,17 |\n| Positivas | **67%** | 50% |\n| Negativas | 33% | 33% |\n| Neutras | 0% | 17% |\n\n*(analista)*\n\nHay una reseña en la que el texto y las estrellas no coinciden. AUR-6 tiene 3 estrellas, pero su texto es negativo (-0,33) por una crítica al estuche *(analista)*.\n\n## 4. Lo bueno y lo malo de cada uno\n\n**Aurora X** *(analista)*\n- ✅ **A favor:** batería, sonido, comodidad, calidad de llamada y relación precio-calidad.\n- ❌ **En contra:**\n  - La conectividad divide opiniones: una reseña dice que la conexión es estable y otra que se desconecta seguido.\n  - El micrófono es malo, según una reseña.\n  - El estuche es frágil.\n  - La cancelación de ruido no es perfecta.\n\n**Brisa Mini** *(analista)*\n- ✅ **A favor:** suena bien para su tamaño, buena batería, resiste el agua, buen diseño y es fácil de usar.\n- ❌ **En contra:**\n  - Distorsiona a volumen alto.\n  - La app se traba.\n  - El Bluetooth tarda en conectar.\n  - Una unidad llegó defectuosa y la atención al cliente tardó semanas. Es la única reseña de 1 estrella.\n\n## 5. Recomendación\n\n**Si querés lo mejor valorado, elegí los Auriculares Aurora X.** Superan al Brisa Mini en casi todas las métricas: promedio, mediana, puntaje mínimo, sentimiento y porcentaje de reseñas positivas. Además, sus opiniones son más parejas, con menos dispersión y un peor puntaje de 2 contra 1 *(analista)*. Hay un matiz: el analista dice que el Aurora X \"sale mejor en todas las métricas\", pero en su propia tabla los dos tienen **la misma proporción de reseñas negativas (33%)**. En ese punto empatan.\n\n**El Brisa Mini cuesta menos de la mitad** ($22.900 contra $48.500), pero sus opiniones están más divididas e incluyen un caso de producto defectuoso con mala atención posventa *(analista)*.\n\n**Lo más importante es para qué lo vas a usar.** No son productos equivalentes:\n- Para **escucha personal**, como viajes, llamadas o aislarte del ruido, los Aurora X son la mejor opción.\n- Para **compartir música o usarlo al aire libre o cerca del agua**, como en la playa o la pileta, el Brisa Mini es el único de los dos pensado para eso. Las reseñas valoran justamente su resistencia al agua.\n\n## ⚠️ Advertencia\n\nLa muestra es muy chica: **6 reseñas por producto** *(analista)*. Una sola reseña más, buena o mala, podría mover bastante los promedios. Tomá estas diferencias como una orientación, no como algo definitivo."
+    },
+    {
+      "nodo": "supervisor",
+      "paso": 4,
+      "destino": "FINISH",
+      "instruccion": "",
+      "razon": "El informe del sintetizador cumple la rúbrica. Completitud: cubre los dos productos con precio, ficha, cantidad de reseñas, puntaje promedio, sentimiento, temas a favor y en contra, y una recomendación. Evidencia: todas las cifras (3,83 y 3,17; 0,36 y 0,17; 67/50% positivas; 33% negativas; medianas, mínimos y desvíos) coinciden con los resultados de las herramientas del analista, y los precios y fichas con las del investigador. Consistencia: no contradice a los otros agentes. 'Más del doble' es correcto (48.500 / 22.900 ≈ 2,12), y además corrige con razón el matiz del empate en negativas (33%). Pertinencia: da una recomendación clara, condicionada al uso, y advierte sobre la muestra chica.",
+      "ajuste": null
+    }
+  ],
+  "contribuciones": [
+    {
+      "agente": "investigador",
+      "intento": 1,
+      "instruccion": "Buscá en la base de productos las reseñas de los Auriculares Aurora X y del Parlante Brisa Mini. Para cada producto traé: la ficha básica (nombre exacto, precio), la lista completa de reseñas con su texto y su puntaje individual, y la cantidad total de reseñas encontradas. Todos los datos tienen que salir de la herramienta de búsqueda, no de tu memoria. No analices ni calcules promedios ni sentimiento: solo reuní y presentá los datos de forma ordenada, separados por producto. Si alguno de los dos productos no aparece o no tiene reseñas, indicalo explícitamente.",
+      "resultado": "Encontré los dos productos en la base y los dos tienen reseñas.\n\n**1. Auriculares Aurora X**\n- **Nombre exacto:** Auriculares Aurora X (categoría audio)\n- **Precio:** $48.500\n- **Ficha:** inalámbricos con cancelación de ruido, batería de 30 h, Bluetooth 5.3, 250 g\n- **Reseñas:** 6 en total (AUR-1 a AUR-6)\n- **Puntaje de cada reseña:** AUR-1: 5 · AUR-2: 4 · AUR-3: 5 · AUR-4: 2 · AUR-5: 4 · AUR-6: 3\n\n**2. Parlante Brisa Mini**\n- **Nombre exacto:** Parlante Brisa Mini (categoría audio)\n- **Precio:** $22.900\n- **Ficha:** parlante portátil resistente al agua, batería de 12 h, Bluetooth 5.0, 480 g\n- **Reseñas:** 6 en total (BRI-1 a BRI-6)\n- **Puntaje de cada reseña:** BRI-1: 5 · BRI-2: 4 · BRI-3: 2 · BRI-4: 3 · BRI-5: 1 · BRI-6: 4\n\nTodos los datos salen de buscar_ficha_producto y buscar_resenas. No copié el texto de las reseñas porque al analista le llega aparte la respuesta completa de las herramientas. Tampoco calculé promedios ni analicé el sentimiento, porque eso lo hace el analista.",
+      "datos": [
+        {
+          "herramienta": "buscar_ficha_producto",
+          "argumentos": {
+            "producto": "Aurora X"
+          },
+          "resultado": {
+            "producto": "Auriculares Aurora X",
+            "categoria": "audio",
+            "precio_ars": 48500,
+            "ficha": {
+              "tipo": "inalámbricos con cancelación de ruido",
+              "bateria_horas": 30,
+              "bluetooth": "5.3",
+              "peso_g": 250
+            }
+          }
+        },
+        {
+          "herramienta": "buscar_ficha_producto",
+          "argumentos": {
+            "producto": "Brisa Mini"
+          },
+          "resultado": {
+            "producto": "Parlante Brisa Mini",
+            "categoria": "audio",
+            "precio_ars": 22900,
+            "ficha": {
+              "tipo": "parlante portátil resistente al agua",
+              "bateria_horas": 12,
+              "bluetooth": "5.0",
+              "peso_g": 480
+            }
+          }
+        },
+        {
+          "herramienta": "buscar_resenas",
+          "argumentos": {
+            "producto": "Aurora X"
+          },
+          "resultado": {
+            "producto": "Auriculares Aurora X",
+            "cantidad": 6,
+            "resenas": [
+              {
+                "id": "AUR-1",
+                "puntaje": 5,
+                "texto": "Excelente sonido, los graves se sienten muy bien y la batería dura todo el día."
+              },
+              {
+                "id": "AUR-2",
+                "puntaje": 4,
+                "texto": "Muy cómodos y bonitos. La cancelación de ruido es buena, aunque no perfecta."
+              },
+              {
+                "id": "AUR-3",
+                "puntaje": 5,
+                "texto": "Los mejores que tuve, la conexión es estable y la calidad de llamada es fantástica."
+              },
+              {
+                "id": "AUR-4",
+                "puntaje": 2,
+                "texto": "Se desconectan seguido del celular y el micrófono es malo. Me decepcionó."
+              },
+              {
+                "id": "AUR-5",
+                "puntaje": 4,
+                "texto": "Buena relación precio calidad, la batería rinde bastante."
+              },
+              {
+                "id": "AUR-6",
+                "puntaje": 3,
+                "texto": "Sonido correcto pero el estuche es frágil y se rayó rápido."
+              }
+            ]
+          }
+        },
+        {
+          "herramienta": "buscar_resenas",
+          "argumentos": {
+            "producto": "Brisa Mini"
+          },
+          "resultado": {
+            "producto": "Parlante Brisa Mini",
+            "cantidad": 6,
+            "resenas": [
+              {
+                "id": "BRI-1",
+                "puntaje": 5,
+                "texto": "Chiquito pero potente, perfecto para llevar a la playa. Resiste el agua sin problemas."
+              },
+              {
+                "id": "BRI-2",
+                "puntaje": 4,
+                "texto": "Suena muy bien para su tamaño y la batería es excelente."
+              },
+              {
+                "id": "BRI-3",
+                "puntaje": 2,
+                "texto": "El volumen alto distorsiona y la app es horrible, se traba todo el tiempo."
+              },
+              {
+                "id": "BRI-4",
+                "puntaje": 3,
+                "texto": "Cumple, nada especial. El bluetooth tarda en conectar."
+              },
+              {
+                "id": "BRI-5",
+                "puntaje": 1,
+                "texto": "Llegó defectuoso y la atención al cliente tardó semanas. Pésima experiencia."
+              },
+              {
+                "id": "BRI-6",
+                "puntaje": 4,
+                "texto": "Lindo diseño, buen sonido y muy fácil de usar."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "agente": "analista",
+      "intento": 1,
+      "instruccion": "Usá los datos crudos de las herramientas del investigador (el JSON de buscar_resenas, que trae id, puntaje y texto de cada reseña) para analizar los dos productos: Auriculares Aurora X (6 reseñas, AUR-1 a AUR-6) y Parlante Brisa Mini (6 reseñas, BRI-1 a BRI-6). Para cada producto: 1) Calculá con tu herramienta de estadísticas el puntaje promedio y, si podés, la mediana, el mínimo, el máximo y la distribución de puntajes. 2) Corré tu herramienta de sentimiento sobre el texto de cada reseña y reportá el resultado por reseña (positivo/neutro/negativo con su score) y un resumen agregado por producto. 3) Identificá los temas positivos y negativos recurrentes que surjan de los textos (por ejemplo batería, conectividad, calidad de sonido, durabilidad, atención al cliente). 4) Verificá que los puntajes y la cantidad de reseñas coincidan con los datos del investigador y señalá cualquier discrepancia, incluida cualquier reseña cuyo sentimiento contradiga su puntaje. Incluí también los precios ($48.500 Aurora X y $22.900 Brisa Mini) para que se pueda considerar la relación precio-calidad. Todas las cifras tienen que salir de tus herramientas, no de cálculo mental. No busques información nueva ni redactes la recomendación final.",
+      "resultado": "## Análisis de reseñas: Auriculares Aurora X vs. Parlante Brisa Mini\n\nLas 12 reseñas (6 por producto) pasaron la validación sin errores, así que los datos son confiables. Las cifras salen de las herramientas, tomando como entrada el JSON del investigador.\n\n### 1. Auriculares Aurora X ($48.500)\n\n**Puntajes:** promedio **3,83**, mediana 4,0, mínimo 2, máximo 5, desvío 1,07.\nDistribución según los datos: dos de 5 (AUR-1, AUR-3), dos de 4 (AUR-2, AUR-5), uno de 3 (AUR-6) y uno de 2 (AUR-4).\n\n**Sentimiento:** promedio **0,36**. 67% positivas, 33% negativas, 0% neutras.\n\n| Reseña | Puntaje | Sentimiento | Score |\n|---|---|---|---|\n| AUR-1 | 5 | positivo | 1,0 |\n| AUR-2 | 4 | positivo | 0,5 |\n| AUR-3 | 5 | positivo | 1,0 |\n| AUR-4 | 2 | negativo | -1,0 |\n| AUR-5 | 4 | positivo | 1,0 |\n| AUR-6 | 3 | negativo | -0,33 |\n\n**Temas que se repiten:**\n- **A favor:** la batería (AUR-1, AUR-5), la calidad de sonido y los graves (AUR-1, AUR-6), la comodidad y el diseño (AUR-2), la buena relación precio-calidad (AUR-5) y la calidad de llamada (AUR-3).\n- **En contra:** la **conectividad** genera opiniones contrarias. AUR-3 dice que la conexión es estable y AUR-4 dice que se desconecta seguido. También aparecen el micrófono malo (AUR-4), un estuche frágil que se raya (AUR-6) y una cancelación de ruido que no es perfecta (AUR-2).\n\n### 2. Parlante Brisa Mini ($22.900)\n\n**Puntajes:** promedio **3,17**, mediana 3,5, mínimo 1, máximo 5, desvío 1,34.\nDistribución según los datos: uno de 5 (BRI-1), dos de 4 (BRI-2, BRI-6), uno de 3 (BRI-4), uno de 2 (BRI-3) y uno de 1 (BRI-5).\n\n**Sentimiento:** promedio **0,17**. 50% positivas, 33% negativas, 17% neutras.\n\n| Reseña | Puntaje | Sentimiento | Score |\n|---|---|---|---|\n| BRI-1 | 5 | positivo | 1,0 |\n| BRI-2 | 4 | positivo | 1,0 |\n| BRI-3 | 2 | negativo | -1,0 |\n| BRI-4 | 3 | neutro | 0,0 |\n| BRI-5 | 1 | negativo | -1,0 |\n| BRI-6 | 4 | positivo | 1,0 |\n\n**Temas que se repiten:**\n- **A favor:** buen sonido para su tamaño (BRI-1, BRI-2, BRI-6), la batería (BRI-2), resiste el agua y se lleva fácil (BRI-1), y el diseño y la facilidad de uso (BRI-6).\n- **En contra:** distorsiona a volumen alto (BRI-3), la app se traba (BRI-3), el Bluetooth tarda en conectar (BRI-4), un equipo llegó defectuoso (BRI-5) y la **atención al cliente** tardó semanas (BRI-5).\n\n### 3. Verificación de los datos\n- **Cantidad y puntajes:** coinciden con lo que informó el investigador (6 + 6 reseñas, mismos IDs y mismos puntajes individuales). No hay discrepancias.\n- **Sentimiento vs. puntaje:** no hay contradicciones fuertes. La única diferencia es **AUR-6**: tiene 3 estrellas (neutral) y el texto da sentimiento negativo (-0,33), por la crítica al estuche. El resto de las reseñas coincide con su puntaje, y BRI-4 (3 estrellas) da neutro.\n\n### 4. Comparación según los números\n\n| Métrica | Aurora X | Brisa Mini |\n|---|---|---|\n| Precio | $48.500 | $22.900 |\n| Puntaje promedio | **3,83** | 3,17 |\n| Mediana | **4,0** | 3,5 |\n| Puntaje mínimo | **2** | 1 |\n| Desvío | **1,07** | 1,34 |\n| Sentimiento promedio | **0,36** | 0,17 |\n| % positivas | **67%** | 50% |\n| % negativas | 33% | 33% |\n\n- El **Aurora X** sale mejor en todas las métricas de satisfacción, y sus opiniones son más parejas (desvío menor y peor puntaje de 2).\n- El **Brisa Mini** cuesta menos de la mitad, pero tiene opiniones más variadas y la única reseña de 1 estrella, por un equipo defectuoso y mala atención al cliente.\n- Ambos tienen la misma proporción de reseñas negativas (33%). Con solo 6 reseñas por producto, la muestra es chica y las diferencias hay que tomarlas con cautela.\n- No tengo una herramienta para calcular precio por punto de puntaje, así que no hice ese cálculo.\n- Además, son productos de tipo distinto (auriculares contra parlante portátil), así que la elección también depende de para qué los vas a usar.",
+      "datos": [
+        {
+          "herramienta": "validar_resenas",
+          "argumentos": {
+            "resenas": [
+              {
+                "id": "AUR-1",
+                "puntaje": 5,
+                "texto": "Excelente sonido, los graves se sienten muy bien y la batería dura todo el día."
+              },
+              {
+                "id": "AUR-2",
+                "puntaje": 4,
+                "texto": "Muy cómodos y bonitos. La cancelación de ruido es buena, aunque no perfecta."
+              },
+              {
+                "id": "AUR-3",
+                "puntaje": 5,
+                "texto": "Los mejores que tuve, la conexión es estable y la calidad de llamada es fantástica."
+              },
+              {
+                "id": "AUR-4",
+                "puntaje": 2,
+                "texto": "Se desconectan seguido del celular y el micrófono es malo. Me decepcionó."
+              },
+              {
+                "id": "AUR-5",
+                "puntaje": 4,
+                "texto": "Buena relación precio calidad, la batería rinde bastante."
+              },
+              {
+                "id": "AUR-6",
+                "puntaje": 3,
+                "texto": "Sonido correcto pero el estuche es frágil y se rayó rápido."
+              }
+            ]
+          },
+          "resultado": {
+            "validas": 6,
+            "invalidas": 0,
+            "errores": []
+          }
+        },
+        {
+          "herramienta": "validar_resenas",
+          "argumentos": {
+            "resenas": [
+              {
+                "id": "BRI-1",
+                "puntaje": 5,
+                "texto": "Chiquito pero potente, perfecto para llevar a la playa. Resiste el agua sin problemas."
+              },
+              {
+                "id": "BRI-2",
+                "puntaje": 4,
+                "texto": "Suena muy bien para su tamaño y la batería es excelente."
+              },
+              {
+                "id": "BRI-3",
+                "puntaje": 2,
+                "texto": "El volumen alto distorsiona y la app es horrible, se traba todo el tiempo."
+              },
+              {
+                "id": "BRI-4",
+                "puntaje": 3,
+                "texto": "Cumple, nada especial. El bluetooth tarda en conectar."
+              },
+              {
+                "id": "BRI-5",
+                "puntaje": 1,
+                "texto": "Llegó defectuoso y la atención al cliente tardó semanas. Pésima experiencia."
+              },
+              {
+                "id": "BRI-6",
+                "puntaje": 4,
+                "texto": "Lindo diseño, buen sonido y muy fácil de usar."
+              }
+            ]
+          },
+          "resultado": {
+            "validas": 6,
+            "invalidas": 0,
+            "errores": []
+          }
+        },
+        {
+          "herramienta": "calcular_estadisticas",
+          "argumentos": {
+            "valores": [
+              5,
+              4,
+              5,
+              2,
+              4,
+              3
+            ]
+          },
+          "resultado": {
+            "cantidad": 6,
+            "promedio": 3.83,
+            "mediana": 4.0,
+            "minimo": 2.0,
+            "maximo": 5.0,
+            "desvio": 1.07
+          }
+        },
+        {
+          "herramienta": "calcular_estadisticas",
+          "argumentos": {
+            "valores": [
+              5,
+              4,
+              2,
+              3,
+              1,
+              4
+            ]
+          },
+          "resultado": {
+            "cantidad": 6,
+            "promedio": 3.17,
+            "mediana": 3.5,
+            "minimo": 1.0,
+            "maximo": 5.0,
+            "desvio": 1.34
+          }
+        },
+        {
+          "herramienta": "analizar_sentimiento",
+          "argumentos": {
+            "textos": [
+              "Excelente sonido, los graves se sienten muy bien y la batería dura todo el día.",
+              "Muy cómodos y bonitos. La cancelación de ruido es buena, aunque no perfecta.",
+              "Los mejores que tuve, la conexión es estable y la calidad de llamada es fantástica.",
+              "Se desconectan seguido del celular y el micrófono es malo. Me decepcionó.",
+              "Buena relación precio calidad, la batería rinde bastante.",
+              "Sonido correcto pero el estuche es frágil y se rayó rápido."
+            ]
+          },
+          "resultado": {
+            "sentimiento_promedio": 0.36,
+            "porcentaje_positivo": 67,
+            "porcentaje_negativo": 33,
+            "porcentaje_neutro": 0,
+            "detalle": [
+              {
+                "puntaje": 1.0,
+                "etiqueta": "positivo"
+              },
+              {
+                "puntaje": 0.5,
+                "etiqueta": "positivo"
+              },
+              {
+                "puntaje": 1.0,
+                "etiqueta": "positivo"
+              },
+              {
+                "puntaje": -1.0,
+                "etiqueta": "negativo"
+              },
+              {
+                "puntaje": 1.0,
+                "etiqueta": "positivo"
+              },
+              {
+                "puntaje": -0.33,
+                "etiqueta": "negativo"
+              }
+            ]
+          }
+        },
+        {
+          "herramienta": "analizar_sentimiento",
+          "argumentos": {
+            "textos": [
+              "Chiquito pero potente, perfecto para llevar a la playa. Resiste el agua sin problemas.",
+              "Suena muy bien para su tamaño y la batería es excelente.",
+              "El volumen alto distorsiona y la app es horrible, se traba todo el tiempo.",
+              "Cumple, nada especial. El bluetooth tarda en conectar.",
+              "Llegó defectuoso y la atención al cliente tardó semanas. Pésima experiencia.",
+              "Lindo diseño, buen sonido y muy fácil de usar."
+            ]
+          },
+          "resultado": {
+            "sentimiento_promedio": 0.17,
+            "porcentaje_positivo": 50,
+            "porcentaje_negativo": 33,
+            "porcentaje_neutro": 17,
+            "detalle": [
+              {
+                "puntaje": 1.0,
+                "etiqueta": "positivo"
+              },
+              {
+                "puntaje": 1.0,
+                "etiqueta": "positivo"
+              },
+              {
+                "puntaje": -1.0,
+                "etiqueta": "negativo"
+              },
+              {
+                "puntaje": 0.0,
+                "etiqueta": "neutro"
+              },
+              {
+                "puntaje": -1.0,
+                "etiqueta": "negativo"
+              },
+              {
+                "puntaje": 1.0,
+                "etiqueta": "positivo"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "agente": "sintetizador",
+      "intento": 1,
+      "instruccion": "Redactá la respuesta final para el usuario, que quiere comprar auriculares o un parlante y pidió reseñas, sentimiento, puntaje promedio de cada producto y una recomendación. Usá solo las cifras de los aportes del investigador y del analista, sin inventar ni recalcular nada. 1) Presentá cada producto con su precio y una ficha breve. Auriculares Aurora X: $48.500, inalámbricos con cancelación de ruido, batería de 30 h, Bluetooth 5.3, 250 g. Parlante Brisa Mini: $22.900, portátil resistente al agua, batería de 12 h, Bluetooth 5.0, 480 g. 2) Indicá la cantidad de reseñas (6 cada uno) y el puntaje promedio: Aurora X 3,83 (mediana 4,0, mínimo 2, máximo 5, desvío 1,07) y Brisa Mini 3,17 (mediana 3,5, mínimo 1, máximo 5, desvío 1,34). 3) Resumí el sentimiento. Aurora X: promedio 0,36, 67% positivas, 33% negativas, 0% neutras. Brisa Mini: promedio 0,17, 50% positivas, 33% negativas, 17% neutras. 4) Mencioná los temas a favor y en contra que identificó el analista. Aurora X: a favor, batería, sonido, comodidad, calidad de llamada y relación precio-calidad; en contra, opiniones divididas sobre la conectividad, micrófono, estuche frágil y cancelación de ruido no perfecta. Brisa Mini: a favor, sonido para su tamaño, batería, resistencia al agua, diseño y facilidad de uso; en contra, distorsión a volumen alto, app que se traba, Bluetooth lento, una unidad defectuosa y mala atención al cliente. 5) Dá una recomendación clara y justificada con esos datos. El Aurora X tiene mejor satisfacción en todas las métricas. El Brisa Mini cuesta menos de la mitad, pero sus opiniones son más dispersas. Aclará que la elección también depende del uso, porque uno es para escucha personal y el otro un parlante portátil, por ejemplo para exteriores o agua. 6) Agregá la advertencia de que la muestra es chica (6 reseñas por producto). No calcules precio por punto ni agregues cifras que no estén en los aportes.",
+      "resultado": "# Auriculares Aurora X vs. Parlante Brisa Mini: cuál conviene\n\n**Los Aurora X tienen mejores reseñas, pero cuestan más del doble. El Brisa Mini solo conviene si lo que buscás es un parlante para compartir o usar cerca del agua.** Abajo está el detalle.\n\n## 1. Los productos\n\n| | Auriculares Aurora X | Parlante Brisa Mini |\n|---|---|---|\n| Precio | $48.500 | $22.900 |\n| Tipo | Inalámbricos con cancelación de ruido | Portátil, resistente al agua |\n| Batería | 30 h | 12 h |\n| Bluetooth | 5.3 | 5.0 |\n| Peso | 250 g | 480 g |\n\n*(investigador)*\n\n## 2. Puntajes de las reseñas\n\nCada producto tiene **6 reseñas** *(investigador)*. El analista confirmó que la cantidad y los puntajes coinciden con lo que trajo el investigador.\n\n| Métrica | Aurora X | Brisa Mini |\n|---|---|---|\n| Puntaje promedio | **3,83** | 3,17 |\n| Mediana | **4,0** | 3,5 |\n| Mínimo / Máximo | 2 / 5 | 1 / 5 |\n| Desvío | **1,07** | 1,34 |\n\n*(analista)*\n\n## 3. Sentimiento de los textos\n\n| Métrica | Aurora X | Brisa Mini |\n|---|---|---|\n| Sentimiento promedio | **0,36** | 0,17 |\n| Positivas | **67%** | 50% |\n| Negativas | 33% | 33% |\n| Neutras | 0% | 17% |\n\n*(analista)*\n\nHay una reseña en la que el texto y las estrellas no coinciden. AUR-6 tiene 3 estrellas, pero su texto es negativo (-0,33) por una crítica al estuche *(analista)*.\n\n## 4. Lo bueno y lo malo de cada uno\n\n**Aurora X** *(analista)*\n- ✅ **A favor:** batería, sonido, comodidad, calidad de llamada y relación precio-calidad.\n- ❌ **En contra:**\n  - La conectividad divide opiniones: una reseña dice que la conexión es estable y otra que se desconecta seguido.\n  - El micrófono es malo, según una reseña.\n  - El estuche es frágil.\n  - La cancelación de ruido no es perfecta.\n\n**Brisa Mini** *(analista)*\n- ✅ **A favor:** suena bien para su tamaño, buena batería, resiste el agua, buen diseño y es fácil de usar.\n- ❌ **En contra:**\n  - Distorsiona a volumen alto.\n  - La app se traba.\n  - El Bluetooth tarda en conectar.\n  - Una unidad llegó defectuosa y la atención al cliente tardó semanas. Es la única reseña de 1 estrella.\n\n## 5. Recomendación\n\n**Si querés lo mejor valorado, elegí los Auriculares Aurora X.** Superan al Brisa Mini en casi todas las métricas: promedio, mediana, puntaje mínimo, sentimiento y porcentaje de reseñas positivas. Además, sus opiniones son más parejas, con menos dispersión y un peor puntaje de 2 contra 1 *(analista)*. Hay un matiz: el analista dice que el Aurora X \"sale mejor en todas las métricas\", pero en su propia tabla los dos tienen **la misma proporción de reseñas negativas (33%)**. En ese punto empatan.\n\n**El Brisa Mini cuesta menos de la mitad** ($22.900 contra $48.500), pero sus opiniones están más divididas e incluyen un caso de producto defectuoso con mala atención posventa *(analista)*.\n\n**Lo más importante es para qué lo vas a usar.** No son productos equivalentes:\n- Para **escucha personal**, como viajes, llamadas o aislarte del ruido, los Aurora X son la mejor opción.\n- Para **compartir música o usarlo al aire libre o cerca del agua**, como en la playa o la pileta, el Brisa Mini es el único de los dos pensado para eso. Las reseñas valoran justamente su resistencia al agua.\n\n## ⚠️ Advertencia\n\nLa muestra es muy chica: **6 reseñas por producto** *(analista)*. Una sola reseña más, buena o mala, podría mover bastante los promedios. Tomá estas diferencias como una orientación, no como algo definitivo.",
+      "datos": []
+    }
+  ],
+  "respuesta_final": "# Auriculares Aurora X vs. Parlante Brisa Mini: cuál conviene\n\n**Los Aurora X tienen mejores reseñas, pero cuestan más del doble. El Brisa Mini solo conviene si lo que buscás es un parlante para compartir o usar cerca del agua.** Abajo está el detalle.\n\n## 1. Los productos\n\n| | Auriculares Aurora X | Parlante Brisa Mini |\n|---|---|---|\n| Precio | $48.500 | $22.900 |\n| Tipo | Inalámbricos con cancelación de ruido | Portátil, resistente al agua |\n| Batería | 30 h | 12 h |\n| Bluetooth | 5.3 | 5.0 |\n| Peso | 250 g | 480 g |\n\n*(investigador)*\n\n## 2. Puntajes de las reseñas\n\nCada producto tiene **6 reseñas** *(investigador)*. El analista confirmó que la cantidad y los puntajes coinciden con lo que trajo el investigador.\n\n| Métrica | Aurora X | Brisa Mini |\n|---|---|---|\n| Puntaje promedio | **3,83** | 3,17 |\n| Mediana | **4,0** | 3,5 |\n| Mínimo / Máximo | 2 / 5 | 1 / 5 |\n| Desvío | **1,07** | 1,34 |\n\n*(analista)*\n\n## 3. Sentimiento de los textos\n\n| Métrica | Aurora X | Brisa Mini |\n|---|---|---|\n| Sentimiento promedio | **0,36** | 0,17 |\n| Positivas | **67%** | 50% |\n| Negativas | 33% | 33% |\n| Neutras | 0% | 17% |\n\n*(analista)*\n\nHay una reseña en la que el texto y las estrellas no coinciden. AUR-6 tiene 3 estrellas, pero su texto es negativo (-0,33) por una crítica al estuche *(analista)*.\n\n## 4. Lo bueno y lo malo de cada uno\n\n**Aurora X** *(analista)*\n- ✅ **A favor:** batería, sonido, comodidad, calidad de llamada y relación precio-calidad.\n- ❌ **En contra:**\n  - La conectividad divide opiniones: una reseña dice que la conexión es estable y otra que se desconecta seguido.\n  - El micrófono es malo, según una reseña.\n  - El estuche es frágil.\n  - La cancelación de ruido no es perfecta.\n\n**Brisa Mini** *(analista)*\n- ✅ **A favor:** suena bien para su tamaño, buena batería, resiste el agua, buen diseño y es fácil de usar.\n- ❌ **En contra:**\n  - Distorsiona a volumen alto.\n  - La app se traba.\n  - El Bluetooth tarda en conectar.\n  - Una unidad llegó defectuosa y la atención al cliente tardó semanas. Es la única reseña de 1 estrella.\n\n## 5. Recomendación\n\n**Si querés lo mejor valorado, elegí los Auriculares Aurora X.** Superan al Brisa Mini en casi todas las métricas: promedio, mediana, puntaje mínimo, sentimiento y porcentaje de reseñas positivas. Además, sus opiniones son más parejas, con menos dispersión y un peor puntaje de 2 contra 1 *(analista)*. Hay un matiz: el analista dice que el Aurora X \"sale mejor en todas las métricas\", pero en su propia tabla los dos tienen **la misma proporción de reseñas negativas (33%)**. En ese punto empatan.\n\n**El Brisa Mini cuesta menos de la mitad** ($22.900 contra $48.500), pero sus opiniones están más divididas e incluyen un caso de producto defectuoso con mala atención posventa *(analista)*.\n\n**Lo más importante es para qué lo vas a usar.** No son productos equivalentes:\n- Para **escucha personal**, como viajes, llamadas o aislarte del ruido, los Aurora X son la mejor opción.\n- Para **compartir música o usarlo al aire libre o cerca del agua**, como en la playa o la pileta, el Brisa Mini es el único de los dos pensado para eso. Las reseñas valoran justamente su resistencia al agua.\n\n## ⚠️ Advertencia\n\nLa muestra es muy chica: **6 reseñas por producto** *(analista)*. Una sola reseña más, buena o mala, podría mover bastante los promedios. Tomá estas diferencias como una orientación, no como algo definitivo.",
+  "completada": true,
+  "error": null
+}
