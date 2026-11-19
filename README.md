@@ -8,3 +8,4 @@ Trabajos del curso de AI Engineering de Coderhouse.
 - [Módulo 4: RAG escalable con Pinecone y recuperación híbrida](modulo-4-rag-pinecone/)
 - [Módulo 5: agente ReAct con LangGraph y memoria persistente](modulo-5-agente-react/)
 - [Módulo 6: orquestador multi-agente con supervisor](modulo-6-orquestador-multiagente/)
+- [Módulo 7: API de producción con Redis, Phoenix y aprobación humana](modulo-7-api-produccion/)

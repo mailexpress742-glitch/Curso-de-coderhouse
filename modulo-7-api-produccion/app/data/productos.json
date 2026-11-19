@@ -1,0 +1,44 @@
+[
+  {
+    "producto": "Auriculares Aurora X",
+    "categoria": "audio",
+    "precio_ars": 48500,
+    "ficha": {"tipo": "inalámbricos con cancelación de ruido", "bateria_horas": 30, "bluetooth": "5.3", "peso_g": 250},
+    "resenas": [
+      {"id": "AUR-1", "puntaje": 5, "texto": "Excelente sonido, los graves se sienten muy bien y la batería dura todo el día."},
+      {"id": "AUR-2", "puntaje": 4, "texto": "Muy cómodos y bonitos. La cancelación de ruido es buena, aunque no perfecta."},
+      {"id": "AUR-3", "puntaje": 5, "texto": "Los mejores que tuve, la conexión es estable y la calidad de llamada es fantástica."},
+      {"id": "AUR-4", "puntaje": 2, "texto": "Se desconectan seguido del celular y el micrófono es malo. Me decepcionó."},
+      {"id": "AUR-5", "puntaje": 4, "texto": "Buena relación precio calidad, la batería rinde bastante."},
+      {"id": "AUR-6", "puntaje": 3, "texto": "Sonido correcto pero el estuche es frágil y se rayó rápido."}
+    ]
+  },
+  {
+    "producto": "Parlante Brisa Mini",
+    "categoria": "audio",
+    "precio_ars": 22900,
+    "ficha": {"tipo": "parlante portátil resistente al agua", "bateria_horas": 12, "bluetooth": "5.0", "peso_g": 480},
+    "resenas": [
+      {"id": "BRI-1", "puntaje": 5, "texto": "Chiquito pero potente, perfecto para llevar a la playa. Resiste el agua sin problemas."},
+      {"id": "BRI-2", "puntaje": 4, "texto": "Suena muy bien para su tamaño y la batería es excelente."},
+      {"id": "BRI-3", "puntaje": 2, "texto": "El volumen alto distorsiona y la app es horrible, se traba todo el tiempo."},
+      {"id": "BRI-4", "puntaje": 3, "texto": "Cumple, nada especial. El bluetooth tarda en conectar."},
+      {"id": "BRI-5", "puntaje": 1, "texto": "Llegó defectuoso y la atención al cliente tardó semanas. Pésima experiencia."},
+      {"id": "BRI-6", "puntaje": 4, "texto": "Lindo diseño, buen sonido y muy fácil de usar."}
+    ]
+  },
+  {
+    "producto": "Teclado Forja K1",
+    "categoria": "periféricos",
+    "precio_ars": 61900,
+    "ficha": {"tipo": "teclado mecánico inalámbrico", "bateria_horas": 400, "switches": "lineales", "peso_g": 900},
+    "resenas": [
+      {"id": "FOR-1", "puntaje": 5, "texto": "Sensación de escritura increíble, los switches son una maravilla y la construcción es sólida."},
+      {"id": "FOR-2", "puntaje": 5, "texto": "Perfecto para programar, muy cómodo y silencioso. Lo recomiendo."},
+      {"id": "FOR-3", "puntaje": 4, "texto": "Excelente teclado, un poco caro pero vale la pena."},
+      {"id": "FOR-4", "puntaje": 5, "texto": "Calidad impecable, la iluminación es hermosa y el software es simple."},
+      {"id": "FOR-5", "puntaje": 3, "texto": "Bueno, pero las teclas se ensucian rápido y es pesado."},
+      {"id": "FOR-6", "puntaje": 4, "texto": "Muy buena construcción, la batería del modo inalámbrico dura semanas."}
+    ]
+  }
+]

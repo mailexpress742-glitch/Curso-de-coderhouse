@@ -1,0 +1,50 @@
+# Levanta Redis (con RediSearch y RedisJSON, que necesita el checkpointer), Phoenix (dashboard
+# de trazas) y la API.
+#
+#   docker compose up -d redis phoenix      # solo la infraestructura (la API corre con uvicorn)
+#   docker compose up -d --build            # todo, incluida la API
+#
+# Phoenix: http://localhost:6006   |   API: http://localhost:8000/docs
+
+services:
+  redis:
+    image: redis/redis-stack-server:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - redis-data:/data
+
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    ports:
+      - "6006:6006" # interfaz web y recolector HTTP de trazas
+      - "4317:4317" # recolector gRPC
+    environment:
+      PHOENIX_WORKING_DIR: /mnt/data
+      # Solo para desarrollo local: sin login. En producción habría que activar la autenticación.
+      PHOENIX_ENABLE_AUTH: "false"
+    volumes:
+      - phoenix-data:/mnt/data
+
+  app:
+    build: .
+    env_file: .env
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      PHOENIX_COLLECTOR_ENDPOINT: http://phoenix:6006/v1/traces
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+      phoenix:
+        condition: service_started
+
+volumes:
+  redis-data:
+  phoenix-data:

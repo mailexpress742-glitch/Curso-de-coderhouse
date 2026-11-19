@@ -1,0 +1,7 @@
+# Dependencias de desarrollo: tests, linter y capturas del dashboard.
+-r requirements.txt
+pytest>=9.1
+pytest-asyncio>=1.0
+fakeredis>=2.26
+ruff>=0.17
+playwright>=1.49
